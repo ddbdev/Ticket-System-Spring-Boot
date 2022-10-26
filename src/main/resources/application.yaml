@@ -1,0 +1,106 @@
+server:
+  port: 8080
+    #servlet:
+  #context-path: /myblog - non richiama solo localhost:8080, ma localhost:8080/myblog per ogni richiesta
+
+spring:
+  application:
+    name: ticketsystem
+  profiles:
+    active: dev
+
+  mail:
+    host: smtp.mailgun.org
+    port: 587
+    username: postmaster
+    password: ${PSWEMAIL}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  data:
+    jpa:
+      repositories:
+        # 'bootstrap-mode' valori ammessi:
+        #   - DEFAULT -> I repositories vengono inizializzati all'avvio dell'applicazione
+        #   - DEFERRED -> I repositories vengono inizializzati all'avvio dell'applicazione ma in modo asincrono
+        #   - LAZY -> I repositories vengono inizializzati nel momento in cui vengono richiamati (velocizza l'avvio dell'applicazione ma aumenta i tempi di latenza alla prima chiamata)
+        bootstrap-mode: LAZY
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/DDB_TicketSystem?createDatabaseIfNotExist=true&autoReconnect=true&useSLL=false&useLegacyDatetimeCode=false
+    username: root
+    password:
+  jpa:
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+        '[format_sql]': true
+        jdbc:
+          '[time_zone]': Europe/Rome
+        #generate_statistics: true
+    show-sql: true
+  sql:
+    init:
+      # Qualora nel package resources ci sia un file data.sql, le istruzioni ivi contenute potrebbero essere eseguite
+      # 'mode' valori ammessi:
+      #  - never -> non vengono mai eseguite le istruzioni presenti nel file data.sql
+      #  - always -> vengono sempre eseguite le istruzioni presenti nel file data.sql. N.B. Se la proprietà spring.jpa.defer-datasource-initialization è a false, le istruzioni vengono eseguite istantaneamente; se impostato a true, le istruzioni sql vengono eseguite dopo l'avvio dell'applicazione (ovvero in maniera differita)
+      #  - embedded -> vengono sempre eseguite le istruzioni presenti nel file data.sql a patto che il database sia di tipo embedded (es. H2, Derby, etc...)
+      mode: never
+
+  jackson:
+    serialization:
+      indent-output: true
+
+logging:
+  level:
+    it:
+      ddbdev:
+        ticketsystem: info
+
+    org:
+      springframework: info
+      hibernate:
+        SQL: TRACE
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
+
+spring-doc:
+  # Enable/Disable the swagger-ui
+  swagger-ui:
+    enabled: true
+  # Enable/Disable the /v3/api-docs endpoint
+  api-docs:
+    enabled: true
+
+
+app:
+  ## Table name prefix
+  jwtSecret: 9a02115a835ee03d5fb83cd8a468ea33e4090aaaec87f53c9fa54512bbef4db8dc656c82a315fa0c785c08b0134716b81ddcd0153d2a7556f2e154912cf5675f
+  jwtExpirationInSeconds: 72000
+  # Comma separated list of allowed origins
+  cors.allowedOrigins: \*
+  tableNamePrefix: DIB_
+  mail.sender: postmaster@sandboxdd3f6a588b504544b24826ee84015375.mailgun.org
+
+avatar:
+  width: 100
+  height: 100
+  weight: 10240
+  extensions: gif,jpeg,jpg,png
+
+postImage:
+  width: 1024
+  height: 576
+  weight: 51200
+  extensions: jpeg,jpg,png
+  path: /Users/Public/Blog Image/
