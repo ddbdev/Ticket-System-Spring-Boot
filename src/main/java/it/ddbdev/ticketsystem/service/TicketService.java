@@ -52,4 +52,8 @@ public class TicketService {
     public Optional<Ticket> getTicketByUUID(String uuid){
         return ticketRepository.findTicketByUuid(uuid);
     }
+
+    public List<TicketResponse> getTicketsByUserId(Long userId){
+        return ticketRepository.getTicketByAuthorId(userId);
+    }
 }

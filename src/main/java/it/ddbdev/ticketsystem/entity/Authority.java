@@ -23,7 +23,7 @@ public class Authority {
 
     private boolean visible = true;
 
-    @Column(name = "default_authority")
+    @Column(name = "default_authority", nullable = false)
     private boolean defaultAuthority = false;
 
     @JsonIgnore

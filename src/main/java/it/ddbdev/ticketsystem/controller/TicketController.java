@@ -107,4 +107,11 @@ public class TicketController {
     }
 
 
+    @GetMapping("/my-tickets")
+    //TODO Pre autorizzazione
+    public ResponseEntity<?> getMyTickets(
+            @CurrentSecurityContext(expression = "authentication?.principal.id") Long currentUserId
+    ){
+        return new ResponseEntity<>(ticketService.getTicketsByUserId(currentUserId), HttpStatus.OK);
+    }
 }

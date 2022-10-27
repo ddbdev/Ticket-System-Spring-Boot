@@ -30,4 +30,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     @Transactional
     @Query(value = "update Ticket t SET t.status = ?1 where t.uuid = ?2")
     void closeTicket(TicketStatus status, String uuid);
+
+    @Query(value = "select new it.ddbdev.ticketsystem.payload.response.TicketResponse(t.uuid, t.category.id, t.user.username, t.title, t.status, t.createdAt, t.updatedAt) from Ticket t where t.user.id = ?1 order by t.status")
+    List<TicketResponse> getTicketByAuthorId(Long userId);
 }

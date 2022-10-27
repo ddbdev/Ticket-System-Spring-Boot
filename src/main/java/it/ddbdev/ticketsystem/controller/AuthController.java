@@ -126,7 +126,7 @@ public class AuthController {
         User user = foundUser.get();
         user.setEnabled(true);
         user.setConfirm(null);
-        user.setAuthorities(Collections.singleton(authorityService.getByAuthorityName("ROLE_READER").get()));
+        user.setAuthorities(Collections.singleton(authorityService.getByAuthorityName("ROLE_USER").get()));
 
         return new ResponseEntity<>("User " + user.getUsername() + " confirmed", HttpStatus.OK);
     }
