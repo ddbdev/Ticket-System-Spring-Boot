@@ -75,6 +75,8 @@ public class TicketController {
         if (!foundTicket.get().getUser().getId().equals(currentUserId))
             return new ResponseEntity<>("You're not the author of this ticket, you can't perform this action", HttpStatus.FORBIDDEN);
 
+        if (foundTicket.get().getStatus().equals(TicketStatus.CLOSED) || foundTicket.get().getStatus().equals(TicketStatus.RESOLVED))
+            return new ResponseEntity<>("The ticket is already closed.", HttpStatus.OK);
         ticketService.closeTicketByUUID(TicketStatus.CLOSED, UUID);
 
         return new ResponseEntity<>("Ticket closed by the author.", HttpStatus.OK);
@@ -108,10 +110,15 @@ public class TicketController {
 
 
     @GetMapping("/my-tickets")
-    //TODO Pre autorizzazione
+    //@PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<?> getMyTickets(
             @CurrentSecurityContext(expression = "authentication?.principal.id") Long currentUserId
     ){
-        return new ResponseEntity<>(ticketService.getTicketsByUserId(currentUserId), HttpStatus.OK);
+        List<TicketResponse> ticketList = ticketService.getTicketsByUserId(currentUserId);
+
+        if (ticketList.isEmpty())
+            return new ResponseEntity<>("No ticket found for this user", HttpStatus.OK);
+
+        return new ResponseEntity<>(ticketList, HttpStatus.OK);
     }
 }
