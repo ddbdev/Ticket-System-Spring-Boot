@@ -3,6 +3,7 @@ package it.ddbdev.ticketsystem.service;
 import it.ddbdev.ticketsystem.entity.Category;
 import it.ddbdev.ticketsystem.entity.Ticket;
 import it.ddbdev.ticketsystem.entity.TicketStatus;
+import it.ddbdev.ticketsystem.payload.response.TicketAuthorResponse;
 import it.ddbdev.ticketsystem.payload.response.TicketResponse;
 import it.ddbdev.ticketsystem.repository.TicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +54,11 @@ public class TicketService {
         return ticketRepository.findTicketByUuid(uuid);
     }
 
-    public List<TicketResponse> getTicketsByUserId(Long userId){
+    public List<TicketAuthorResponse> getTicketsByUserId(Long userId){
         return ticketRepository.getTicketByAuthorId(userId);
+    }
+
+    public List<TicketResponse> getTicketByAssignedAtId(Long userId){
+        return ticketRepository.getTicketByAssgiendAt(userId);
     }
 }

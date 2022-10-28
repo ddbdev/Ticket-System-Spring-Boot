@@ -6,6 +6,7 @@ import it.ddbdev.ticketsystem.entity.Ticket;
 import it.ddbdev.ticketsystem.entity.TicketStatus;
 import it.ddbdev.ticketsystem.entity.User;
 import it.ddbdev.ticketsystem.payload.request.TicketRequest;
+import it.ddbdev.ticketsystem.payload.response.TicketAuthorResponse;
 import it.ddbdev.ticketsystem.payload.response.TicketResponse;
 import it.ddbdev.ticketsystem.service.CategoryService;
 import it.ddbdev.ticketsystem.service.TicketService;
@@ -110,14 +111,29 @@ public class TicketController {
 
 
     @GetMapping("/my-tickets")
-    //@PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<?> getMyTickets(
             @CurrentSecurityContext(expression = "authentication?.principal.id") Long currentUserId
     ){
-        List<TicketResponse> ticketList = ticketService.getTicketsByUserId(currentUserId);
+        List<TicketAuthorResponse> ticketList = ticketService.getTicketsByUserId(currentUserId);
 
         if (ticketList.isEmpty())
             return new ResponseEntity<>("No ticket found for this user", HttpStatus.OK);
+
+        return new ResponseEntity<>(ticketList, HttpStatus.OK);
+    }
+
+    @GetMapping("/manage-tickets")
+    @PreAuthorize("hasAnyRole('ROLE_MODERATOR', 'ROLE_SUPER_MODERATOR', 'ROLE_ADMIN')")
+    public ResponseEntity<?> manageTickets(
+            @CurrentSecurityContext(expression = "authentication?.principal.id") Long currentUserId
+    ){
+
+        List<TicketResponse> ticketList = ticketService.getTicketByAssignedAtId(currentUserId);
+
+        if (ticketList.isEmpty())
+            return new ResponseEntity<>("No ticket assigned.", HttpStatus.OK);
+
 
         return new ResponseEntity<>(ticketList, HttpStatus.OK);
     }

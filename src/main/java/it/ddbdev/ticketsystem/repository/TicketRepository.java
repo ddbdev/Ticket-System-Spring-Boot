@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import it.ddbdev.ticketsystem.entity.Category;
 import it.ddbdev.ticketsystem.entity.Ticket;
 import it.ddbdev.ticketsystem.entity.TicketStatus;
+import it.ddbdev.ticketsystem.payload.response.TicketAuthorResponse;
 import it.ddbdev.ticketsystem.payload.response.TicketResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -31,6 +32,9 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     @Query(value = "update Ticket t SET t.status = ?1 where t.uuid = ?2")
     void closeTicket(TicketStatus status, String uuid);
 
-    @Query(value = "select new it.ddbdev.ticketsystem.payload.response.TicketResponse(t.uuid, t.category.id, t.user.username, t.title, t.status, t.createdAt, t.updatedAt) from Ticket t where t.user.id = ?1 order by t.status")
-    List<TicketResponse> getTicketByAuthorId(Long userId);
+    @Query(value = "select new it.ddbdev.ticketsystem.payload.response.TicketAuthorResponse(t.uuid, t.category.id, t.title, t.status, t.updatedAt) from Ticket t where t.user.id = ?1 order by t.status")
+    List<TicketAuthorResponse> getTicketByAuthorId(Long userId);
+
+    @Query(value = "select new it.ddbdev.ticketsystem.payload.response.TicketResponse(t.uuid, t.category.id, t.user.username, t.title, t.status, t.createdAt, t.updatedAt) from Ticket t where t.assignedTo.id = ?1")
+    List<TicketResponse> getTicketByAssgiendAt(Long userId);
 }
