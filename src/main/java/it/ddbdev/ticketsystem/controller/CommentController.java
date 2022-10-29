@@ -18,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Optional;
@@ -30,16 +31,15 @@ public class CommentController {
 
     private final CommentService commentService;
     private final TicketService ticketService;
-    private final AuthorityService authorityService;
 
     @Autowired
-    public CommentController(CommentService commentService, TicketService ticketService, AuthorityService authorityService) {
+    public CommentController(CommentService commentService, TicketService ticketService) {
         this.commentService = commentService;
         this.ticketService = ticketService;
-        this.authorityService = authorityService;
     }
 
-    @PostMapping()
+    @PostMapping
+    @Transactional
     public ResponseEntity<?> addComment(
             @CurrentSecurityContext(expression = "authentication") Authentication authentication,
             @RequestBody CommentRequest request
@@ -62,6 +62,10 @@ public class CommentController {
                 return new ResponseEntity<>("You're not the author of this ticket!", HttpStatus.FORBIDDEN);
         }
         else {
+            if (foundTicket.get().getAssignedTo() == null){
+                foundTicket.get().setAssignedTo(new User(user.getId()));
+                foundTicket.get().setStatus(TicketStatus.ON_HOLD);
+            }
             if (!foundTicket.get().getAssignedTo().getId().equals(user.getId()))
                 return new ResponseEntity<>("This ticked is already assigned to someone else.", HttpStatus.FORBIDDEN);
         }
