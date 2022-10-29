@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class TicketResponse {
 
+    private Long id;
     private String UUID;
     private String category;
     private String author;

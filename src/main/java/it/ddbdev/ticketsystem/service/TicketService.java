@@ -59,6 +59,6 @@ public class TicketService {
     }
 
     public List<TicketResponse> getTicketByAssignedAtId(Long userId){
-        return ticketRepository.getTicketByAssgiendAt(userId);
+        return ticketRepository.getTicketByAssignedAt(userId);
     }
 }

@@ -19,10 +19,10 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     @Query(value = "select t from Ticket t where t.category = ?1")
     List<Ticket> findByCategory(Category category);
 
-    @Query(value = "select new it.ddbdev.ticketsystem.payload.response.TicketResponse(t.uuid, t.category.id, t.user.username, t.title, t.status, t.createdAt, t.updatedAt) from Ticket t where t.status = ?1  and t.category = ?2 order by t.updatedAt desc")
+    @Query(value = "select new it.ddbdev.ticketsystem.payload.response.TicketResponse(t.id, t.uuid, t.category.id, t.user.username, t.title, t.status, t.createdAt, t.updatedAt) from Ticket t where t.status = ?1  and t.category = ?2 order by t.updatedAt desc")
     List<TicketResponse> findTicketByStatus(TicketStatus status, Category category);
 
-    @Query(value = "select new it.ddbdev.ticketsystem.payload.response.TicketResponse(t.uuid, t.category.id, t.user.username, t.title, t.status, t.createdAt, t.updatedAt) from Ticket t where t.category = ?1")
+    @Query(value = "select new it.ddbdev.ticketsystem.payload.response.TicketResponse(t.id, t.uuid, t.category.id, t.user.username, t.title, t.status, t.createdAt, t.updatedAt) from Ticket t where t.category = ?1")
     List<TicketResponse> getAllTickets(Category category);
 
     Optional<Ticket> findTicketByUuid(String uuid);
@@ -32,9 +32,9 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     @Query(value = "update Ticket t SET t.status = ?1 where t.uuid = ?2")
     void closeTicket(TicketStatus status, String uuid);
 
-    @Query(value = "select new it.ddbdev.ticketsystem.payload.response.TicketAuthorResponse(t.uuid, t.category.id, t.title, t.status, t.updatedAt) from Ticket t where t.user.id = ?1 order by t.status")
+    @Query(value = "select new it.ddbdev.ticketsystem.payload.response.TicketAuthorResponse(t.id, t.uuid, t.category.id, t.title, t.status, t.updatedAt) from Ticket t where t.user.id = ?1 order by t.status")
     List<TicketAuthorResponse> getTicketByAuthorId(Long userId);
 
-    @Query(value = "select new it.ddbdev.ticketsystem.payload.response.TicketResponse(t.uuid, t.category.id, t.user.username, t.title, t.status, t.createdAt, t.updatedAt) from Ticket t where t.assignedTo.id = ?1")
-    List<TicketResponse> getTicketByAssgiendAt(Long userId);
+    @Query(value = "select new it.ddbdev.ticketsystem.payload.response.TicketResponse(t.id, t.uuid, t.category.id, t.user.username, t.title, t.status, t.createdAt, t.updatedAt) from Ticket t where t.assignedTo.id = ?1")
+    List<TicketResponse> getTicketByAssignedAt(Long userId);
 }
