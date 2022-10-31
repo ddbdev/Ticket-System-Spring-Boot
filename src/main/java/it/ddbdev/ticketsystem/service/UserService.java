@@ -52,4 +52,8 @@ public class UserService {
 
         return getMeResponse;
     }
+
+    public Optional<User> getUserByIdAndRoleModerator(Long id){
+        return userRepository.getUserByIdAndRoleModerator(id);
+    }
 }

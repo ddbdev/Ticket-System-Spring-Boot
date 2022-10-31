@@ -27,4 +27,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("select new it.ddbdev.ticketsystem.payload.response.GetMeResponse(u.id, u.username, u.email, u.bio, a,0L, u.createdAt) from User u left join Avatar a on a.id = u.avatar.id WHERE u.id = :id")
     GetMeResponse getMe(@Param("id") Long id);
+
+    @Query(value = "select u from User u inner join u.authorities au  where u.id = ?1 and au.authorityName = 'ROLE_MODERATOR' ")
+    Optional<User> getUserByIdAndRoleModerator(Long id);
 }
