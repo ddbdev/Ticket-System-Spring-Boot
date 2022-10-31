@@ -31,5 +31,15 @@ Clone the project
   git clone https://github.com/ddbdev/Ticket-System-Spring-Boot/tree/master
 ```
 
+There will be no user registered at the time you run the project, once you run, before register a new user please read the IMPORTANT message below.
+
+
+IMPORTANT: Create some role in authority via DB, you can't create authority in swagger unless you're admin, set at least 1 role to default to proceed with the registration.
+
+
+# Scope of the project
+This project has been developed for personal purposes, if you want to use it in your project I'll be more than happy to help you if you face any problem.
+If you use it a star would be appreciated.
+
 
 
