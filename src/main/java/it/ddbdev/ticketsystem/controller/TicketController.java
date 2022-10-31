@@ -5,6 +5,7 @@ import it.ddbdev.ticketsystem.entity.Category;
 import it.ddbdev.ticketsystem.entity.Ticket;
 import it.ddbdev.ticketsystem.entity.TicketStatus;
 import it.ddbdev.ticketsystem.entity.User;
+import it.ddbdev.ticketsystem.payload.request.ClosingRequest;
 import it.ddbdev.ticketsystem.payload.request.ReassignRequest;
 import it.ddbdev.ticketsystem.payload.request.TicketRequest;
 import it.ddbdev.ticketsystem.payload.response.TicketAuthorResponse;
@@ -67,24 +68,28 @@ public class TicketController {
 
     }
 
-    @PutMapping("/{UUID}")
+    @PutMapping
     public ResponseEntity<?> updateTicket(
-            @PathVariable String UUID,
+            @RequestBody @Valid ClosingRequest request,
             @CurrentSecurityContext(expression = "authentication?.principal.id") Long currentUserId
     ){
-        Optional<Ticket> foundTicket = ticketService.getTicketByUUID(UUID);
+        Optional<Ticket> foundTicket = ticketService.getTicketByUUID(request.getUuid().trim());
 
         if (!foundTicket.isPresent())
-            return new ResponseEntity<>("No ticket found with this " + UUID, HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>("No ticket found with uuid " + request.getUuid(), HttpStatus.FORBIDDEN);
 
         if (!foundTicket.get().getUser().getId().equals(currentUserId))
             return new ResponseEntity<>("You're not the author of this ticket, you can't perform this action", HttpStatus.FORBIDDEN);
 
         if (foundTicket.get().getStatus().equals(TicketStatus.CLOSED) || foundTicket.get().getStatus().equals(TicketStatus.RESOLVED))
             return new ResponseEntity<>("The ticket is already closed.", HttpStatus.OK);
-        ticketService.closeTicketByUUID(TicketStatus.CLOSED, UUID);
 
-        return new ResponseEntity<>("Ticket closed by the author.", HttpStatus.OK);
+        if (!EnumUtils.isValidEnum(TicketStatus.class, request.getStatus()))
+            return new ResponseEntity<>("Not a valid status.", HttpStatus.FORBIDDEN);
+
+        ticketService.closeTicketByUUID(TicketStatus.valueOf(request.getStatus()), request.getUuid());
+
+        return new ResponseEntity<>("Ticket status changed by the author.", HttpStatus.OK);
 
     }
 
